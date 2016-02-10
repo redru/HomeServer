@@ -1,0 +1,80 @@
+<!-- Entries buttons menu -->
+<div class="row row-buffer">
+    <div class="col-md-5">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addEntryModal">Aggiungi Entrata</button>
+        <button type="button" class="btn btn-warning" data-ng-click="">Modifica Entrata</button>
+        <button type="button" class="btn btn-danger">Rimuovi Entrata</button>
+    </div>
+</div>
+
+<!-- Entries table -->
+<div class="row row-buffer">
+    <div class="col-md-12">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="col-md-1">ID</th>
+                <th class="col-md-1">ACCOUNT_ID</th>
+                <th class="col-md-1">USER_ID</th>
+                <th class="col-md-1">VALUE</th>
+                <th class="col-md-4">CAUSAL</th>
+                <th class="col-md-2">DATE</th>
+                <th class="col-md-2">INSERT_DATE</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="entry in entries">
+                <td>{{ entry.ID }}</td>
+                <td>{{ entry.USER_ID }}</td>
+                <td>{{ entry.ACCOUNT_ID }}</td>
+                <td>{{ entry.VALUE }}</td>
+                <td>{{ entry.CAUSAL }}</td>
+                <td>{{ entry.DATE }}</td>
+                <td>{{ entry.INSERT_DATE }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addEntryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Aggiungi entrata</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <fieldset class="form-group">
+                        <label for="userId">ID Utente</label>
+                        <input type="number" class="form-control" id="userId" placeholder="ID Utente" data-ng-model="addEntryModel.entry.USER_ID">
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="accountId">ID Conto</label>
+                        <input type="number" class="form-control" id="accountId" placeholder="ID Conto" data-ng-model="addEntryModel.entry.ACCOUNT_ID">
+                        <!-- <small class="text-muted">We'll never share your email with anyone else.</small> -->
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="value">Valore</label>
+                        <input type="number" class="form-control" id="value" placeholder="Valore in euro" data-ng-model="addEntryModel.entry.VALUE">
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="causal">Descrizione causale</label>
+                        <input type="text" class="form-control" id="causal" placeholder="Descrizione causale" data-ng-model="addEntryModel.entry.CAUSAL">
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="date">Data valore</label>
+                        <input type="date" class="form-control" id="date" placeholder="Data valore" data-ng-model="addEntryModel.entry.DATE">
+                    </fieldset>
+
+                    <button class="btn btn-primary" data-ng-click="addEntry()">Salva</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
