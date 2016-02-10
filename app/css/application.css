@@ -1,0 +1,19 @@
+.bank-header {
+    margin-left: 1%;
+}
+
+.bank-title {
+    margin-left: 1%;
+}
+
+.row-buffer {
+    margin-bottom: 1%;
+    margin-top: 1%;
+}
+
+.fading-line {
+    background: linear-gradient(to right, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%);
+    display:block;
+    height:1px;
+    margin: 1% 0% 1% 0%;
+}

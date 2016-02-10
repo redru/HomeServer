@@ -1,0 +1,29 @@
+<!-- Users buttons menu -->
+<div class="row row-buffer">
+    <div class="col-md-5 col-md-offset-1">
+        <button type="button" class="btn btn-primary" data-ng-click="">Aggiungi Utente</button>
+        <button type="button" class="btn btn-danger">Elimina Utente</button>
+    </div>
+</div>
+
+<!-- Users table -->
+<div class="row row-buffer">
+    <div class="col-md-3 col-md-offset-1">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th class="col-md-4">ID</th>
+                <th class="col-md-4">USERNAME</th>
+                <th class="col-md-4">PASSWORD</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="x in users">
+                <td>{{ x.ID }}</td>
+                <td>{{ x.USERNAME }}</td>
+                <td>{{ x.PASSWORD }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

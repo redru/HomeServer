@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" data-ng-app="bank">
+<head>
+    <title>Banking - Home</title>
+    <meta charset="UTF-8">
+
+    <!-- JQUERY -->
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- BOOTSTRAP -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- Application name -->
+<h3><span class="bank-header">Banking application</span></h3>
+
+<!-- Menu -->
+<ul class="nav nav-pills">
+    <li id="home" role="presentation" class="active"><a href="#/Home"><span class="glyphicon glyphicon-home" aria-hidden="true" title="Home"></span></a></li>
+    <li id="utenti" role="presentation"><a href="#/Utenti"><span class="glyphicon glyphicon-user" aria-hidden="true" title="Utenti"></span></a></li>
+    <li id="conto" role="presentation"><a href="#/Conto">Conto</a></li>
+    <li id="complessivo" role="presentation"><a href="#/Complessivo">Complessivo</a></li>
+</ul>
+
+<span class="fading-line"></span>
+
+<!-- Dynamic loaded content div -->
+<div data-ng-view></div>
+
+</body>
+
+<!-- DATATABLES -->
+<!--<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"></script>-->
+<!--<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.css">-->
+
+<!-- ANGULAR -->
+<script src="/bower_components/angular/angular.min.js"></script>
+<script src="/bower_components/angular-route/angular-route.min.js"></script>
+
+<!-- APPLICATION -->
+<link rel="stylesheet" href="/app/css/application.css">
+
+<script src="/app/js/bank.js"></script>
+
+<script src="/app/js/angular-routes.js"></script>
+<script src="/app/js/controller/home-controller.js"></script>
+<script src="/app/js/controller/utenti-controller.js"></script>
+<script src="/app/js/controller/conto-controller.js"></script>
+<script src="/app/js/controller/complessivo-controller.js"></script>
+
+</html>
