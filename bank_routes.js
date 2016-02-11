@@ -8,6 +8,7 @@ function BankDb() {
 
     this.open = function() {
         this.db = new sqlite3.Database('./data/BANK.db');
+        this.db.all('PRAGMA foreign_keys = ON');
     };
 
     this.close = function() {
@@ -119,13 +120,24 @@ router.post('/addEntry', function(req, res) {
         { $USER_ID: entry.USER_ID, $ACCOUNT_ID: entry.ACCOUNT_ID, $CODE: entry.CODE, $VALUE: entry.VALUE, $CAUSAL: entry.CAUSAL, $DATE: entry.DATE },
         function(err) {
             if (err) {
-                res.status(200).send('ERROR');
+                res.status(200).send({});
                 console.log(err);
+                db.close();
             } else {
-                res.status(200).send('OK');
-            }
+                db.close();
+                db = new BankDb();
+                db.open();
+                db.getEntries(entry.USER_ID, entry.ACCOUNT_ID, function(err, rows) {
+                    if (err) {
+                        res.status(200).send({});
+                        console.log(err);
+                    } else {
+                        res.status(200).type('json').json(JSON.stringify(rows ? rows : {}));
+                    }
 
-            db.close();
+                    db.close();
+                });
+            }
         });
 });
 

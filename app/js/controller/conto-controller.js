@@ -59,9 +59,9 @@
                     },
                     data: JSON.stringify($scope.addEntryModel)
                 }).then(function (response) {
-                    if (response.data == 'OK') {
+                    if (response.data) {
+                        $scope.entries = JSON.parse(response.data);
                         document.getElementById('addEntryForm').reset();
-                        alert('Inserimento avvenuto correttamente.');
                     } else {
                         alert('Problemi durante l\'inserimento.');
                     }

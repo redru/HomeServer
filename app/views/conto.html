@@ -33,8 +33,8 @@
             <tr>
                 <th class="col-md-1">VALORE</th>
                 <th class="col-md-1">CODICE</th>
-                <th class="col-md-4">CAUSALE</th>
-                <th class="col-md-2">DATA VALORE</th>
+                <th class="col-md-5">CAUSALE</th>
+                <th class="col-md-1">DATA VALORE</th>
                 <th class="col-md-2">DATA INSERIMENTO</th>
                 <th class="col-md-2">AZIONI</th>
             </tr>
@@ -45,7 +45,7 @@
                 <td>{{entry.VALUE | currency:"€"}}</td>
                 <td>{{entry.CODE}}</td>
                 <td>{{entry.CAUSAL}}</td>
-                <td>{{entry.DATE}}</td>
+                <td>{{entry.DATE | date:'yyyy-MM-dd'}}</td>
                 <td>{{entry.INSERT_DATE}}</td>
                 <td>
                     <button type="button" class="btn btn-warning btn-xs" data-ng-click="modifyEntry(entry.ID)">Modifica</button>
@@ -85,20 +85,20 @@
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="value">Valore</label>
-                        <input type="number" step="0.01" class="form-control" id="value" placeholder="Valore in euro" data-ng-model="addEntryModel.entry.VALUE">
+                        <input type="number" step="0.01" class="form-control" id="value" autocomplete="off" placeholder="Valore in euro" data-ng-model="addEntryModel.entry.VALUE">
                         <!-- <small class="text-muted">We'll never share your email with anyone else.</small> -->
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="code">Codice inserimento</label>
-                        <input type="text" class="form-control" id="code" placeholder="Codice inserimento" data-ng-model="addEntryModel.entry.CODE">
+                        <input type="text" class="form-control" id="code" autocomplete="off" placeholder="Codice inserimento" data-ng-model="addEntryModel.entry.CODE">
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="causal">Descrizione causale</label>
-                        <input type="text" class="form-control" id="causal" placeholder="Descrizione causale" data-ng-model="addEntryModel.entry.CAUSAL">
+                        <input type="text" class="form-control" id="causal" autocomplete="off" placeholder="Descrizione causale" data-ng-model="addEntryModel.entry.CAUSAL">
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="date">Data valore</label>
-                        <input type="date" class="form-control" id="date" placeholder="Data valore" data-ng-model="addEntryModel.entry.DATE">
+                        <input type="date" class="form-control" id="date" autocomplete="off" placeholder="Data valore" data-ng-model="addEntryModel.entry.DATE">
                     </fieldset>
 
                     <button class="btn btn-primary" data-ng-click="addEntry()">Salva</button>
