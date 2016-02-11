@@ -1,39 +1,46 @@
 <!-- Entries buttons menu -->
 <div class="row row-buffer">
     <div class="col-md-5">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addEntryModal">Aggiungi Entrata</button>
-        <button type="button" class="btn btn-warning" data-ng-click="">Modifica Entrata</button>
-        <button type="button" class="btn btn-danger">Rimuovi Entrata</button>
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addEntryModal">Aggiungi Entrata</button>
     </div>
 </div>
 
 <!-- Entries table -->
 <div class="row row-buffer">
     <div class="col-md-12">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-hover">
             <thead>
             <tr>
-                <th class="col-md-1">ID</th>
-                <th class="col-md-1">ACCOUNT_ID</th>
-                <th class="col-md-1">USER_ID</th>
-                <th class="col-md-1">VALUE</th>
-                <th class="col-md-4">CAUSAL</th>
-                <th class="col-md-2">DATE</th>
-                <th class="col-md-2">INSERT_DATE</th>
+                <th class="col-md-1">VALORE</th>
+                <th class="col-md-1">CODICE</th>
+                <th class="col-md-4">CAUSALE</th>
+                <th class="col-md-2">DATA VALORE</th>
+                <th class="col-md-2">DATA INSERIMENTO</th>
+                <th class="col-md-2">AZIONI</th>
             </tr>
             </thead>
+
             <tbody>
             <tr data-ng-repeat="entry in entries">
-                <td>{{ entry.ID }}</td>
-                <td>{{ entry.USER_ID }}</td>
-                <td>{{ entry.ACCOUNT_ID }}</td>
-                <td>{{ entry.VALUE }}</td>
-                <td>{{ entry.CAUSAL }}</td>
-                <td>{{ entry.DATE }}</td>
-                <td>{{ entry.INSERT_DATE }}</td>
+                <td>{{entry.VALUE | currency:"€"}}</td>
+                <td>{{entry.CODE}}</td>
+                <td>{{entry.CAUSAL}}</td>
+                <td>{{entry.DATE}}</td>
+                <td>{{entry.INSERT_DATE}}</td>
+                <td>
+                    <button type="button" class="btn btn-warning btn-xs" data-ng-click="modifyEntry(entry.ID)">Modifica</button>
+                    <button type="button" class="btn btn-danger btn-xs">Rimuovi</button>
+                </td>
             </tr>
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- Entries buttons menu -->
+<div class="row row-buffer">
+    <div class="col-md-5">
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addEntryModal">Aggiungi Entrata</button>
     </div>
 </div>
 
@@ -46,7 +53,7 @@
                 <h4 class="modal-title" id="myModalLabel">Aggiungi entrata</h4>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="addEntryForm">
                     <fieldset class="form-group">
                         <label for="userId">ID Utente</label>
                         <input type="number" class="form-control" id="userId" placeholder="ID Utente" data-ng-model="addEntryModel.entry.USER_ID">
@@ -58,7 +65,11 @@
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="value">Valore</label>
-                        <input type="number" class="form-control" id="value" placeholder="Valore in euro" data-ng-model="addEntryModel.entry.VALUE">
+                        <input type="number" step="0.01" class="form-control" id="value" placeholder="Valore in euro" data-ng-model="addEntryModel.entry.VALUE">
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="code">Codice inserimento</label>
+                        <input type="text" class="form-control" id="code" placeholder="Codice inserimento" data-ng-model="addEntryModel.entry.CODE">
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="causal">Descrizione causale</label>
@@ -70,6 +81,7 @@
                     </fieldset>
 
                     <button class="btn btn-primary" data-ng-click="addEntry()">Salva</button>
+                    <button type="reset" class="btn btn-default">Pulisci</button>
                 </form>
             </div>
             <div class="modal-footer">

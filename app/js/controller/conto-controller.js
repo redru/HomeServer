@@ -16,8 +16,17 @@
                     },
                     data: JSON.stringify($scope.addEntryModel)
                 }).then(function (response) {
-                    response.data == 'OK' ? alert('Inserimento avvenuto correttamente.') : alert('Problemi durante l\'inserimento.');
+                    if (response.data == 'OK') {
+                        document.getElementById('addEntryForm').reset();
+                        alert('Inserimento avvenuto correttamente.');
+                    } else {
+                        alert('Problemi durante l\'inserimento.');
+                    }
                 });
-            }
+            };
+
+            $scope.modifyEntry = function(id) {
+                alert('Entry da modificare: ' + id);
+            };
         }]);
 })();
