@@ -1,16 +1,26 @@
 <!-- Entries buttons menu -->
 <div class="row row-buffer">
     <div class="col-md-5">
-        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addEntryModal">Aggiungi Entrata</button>
+        <button type="button"
+                class="btn btn-primary btn-xs"
+                data-toggle="modal"
+                data-target="#addEntryModal"
+                data-ng-disabled="!selectedUser || !selectedAccount">Aggiungi Entrata</button>
+
         <label>Utente:</label>
-        <select data-ng-model="selectedUser" data-ng-change="getAccountsByUser(selectedUser)">
+        <select
+                data-ng-model="selectedUser"
+                ng-options="user.USERNAME for user in users track by user.ID"
+                data-ng-change="getUserAccounts()">
             <option selected="selected"></option>
-            <option data-ng-repeat="user in users" value="{{user.ID}}">{{user.USERNAME}}</option>
         </select>
+
         <label>Conto:</label>
-        <select data-ng-model="selectedAccount" data-ng-change="">
+        <select
+                data-ng-model="selectedAccount"
+                ng-options="account.DESCRIPTION for account in accounts track by account.ID"
+                data-ng-change="getUserAccountEntries()">
             <option selected="selected"></option>
-            <option data-ng-repeat="account in accounts" value="{{account.ID}}">{{user.DESCRIPTION}}</option>
         </select>
     </div>
 </div>
@@ -50,7 +60,12 @@
 <!-- Entries buttons menu -->
 <div class="row row-buffer">
     <div class="col-md-5">
-        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addEntryModal">Aggiungi Entrata</button>
+        <button
+                type="button"
+                class="btn btn-primary btn-xs"
+                data-toggle="modal"
+                data-target="#addEntryModal"
+                data-ng-disabled="!selectedUser || !selectedAccount">Aggiungi Entrata</button>
     </div>
 </div>
 
@@ -65,17 +80,13 @@
             <div class="modal-body">
                 <form id="addEntryForm">
                     <fieldset class="form-group">
-                        <label for="userId">ID Utente</label>
-                        <input type="number" class="form-control" id="userId" placeholder="ID Utente" data-ng-model="addEntryModel.entry.USER_ID">
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <label for="accountId">ID Conto</label>
-                        <input type="number" class="form-control" id="accountId" placeholder="ID Conto" data-ng-model="addEntryModel.entry.ACCOUNT_ID">
-                        <!-- <small class="text-muted">We'll never share your email with anyone else.</small> -->
+                        <span class="label label-primary bank-label">{{selectedUser.USERNAME}}</span>
+                        <span class="label label-primary bank-label">{{selectedAccount.DESCRIPTION}}</span>
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="value">Valore</label>
                         <input type="number" step="0.01" class="form-control" id="value" placeholder="Valore in euro" data-ng-model="addEntryModel.entry.VALUE">
+                        <!-- <small class="text-muted">We'll never share your email with anyone else.</small> -->
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="code">Codice inserimento</label>

@@ -6,31 +6,51 @@
                     $scope.users = JSON.parse(response.data);
                 });
 
-            $http.get('/bank/getEntries')
-                .then(function (response) {
-                    $scope.entries = JSON.parse(response.data);
-                });
-
             /**
              *
              * @param ownerId
              */
-            $scope.getAccountsByUser = function(ownerId) {
+            $scope.getUserAccounts = function() {
+                $scope.accounts = [];
+                $scope.entries = [];
+                $scope.selectedAccount = '';
+
                 $http({
                     url: '/bank/getAccounts',
                     method: 'GET',
-                    params: {OWNER_ID: ownerId},
+                    params: {USER_ID: $scope.selectedUser.ID},
 
                 }).then(function (response) {
                     var accounts = JSON.parse(response.data);
                     $scope.accounts = accounts ? accounts : [];
                 });
-            }
+            };
+
+            /**
+             *
+             * @param userId
+             * @param accountId
+             */
+            $scope.getUserAccountEntries = function() {
+                $scope.entries = [];
+
+                $http({
+                    url: '/bank/getEntries',
+                    method: 'GET',
+                    params: {USER_ID: $scope.selectedUser.ID, ACCOUNT_ID: $scope.selectedAccount.ID},
+
+                }).then(function (response) {
+                    $scope.entries = JSON.parse(response.data);
+                });
+            };
 
             /**
              *
              */
             $scope.addEntry = function() {
+                $scope.addEntryModel.entry.USER_ID = $scope.selectedUser.ID;
+                $scope.addEntryModel.entry.ACCOUNT_ID = $scope.selectedAccount.ID;
+
                 $http({
                     method: 'POST',
                     url: '/bank/addEntry',

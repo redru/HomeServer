@@ -6,6 +6,10 @@
     margin-left: 1%;
 }
 
+.bank-label {
+    font-size: 16px;
+}
+
 .row-buffer {
     margin-bottom: 1%;
     margin-top: 1%;
