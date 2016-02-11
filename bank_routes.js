@@ -8,29 +8,49 @@ router.get('/', function(req, res) {
 });
 
 router.get('/getUsers', function(req, res) {
-    var bankDB = new sqlite3.Database('./data/BANK.db');
-    bankDB.all('SELECT * FROM USERS', function(err, rows) {
+    var db = new sqlite3.Database('./data/BANK.db');
+    db.all('SELECT * FROM USERS', function(err, rows) {
         if (err) {
             console.log(err);
-            res.status(404).send('Internal error.');
+            res.status(200).send('ERROR');
+        } else {
+            if (rows[0])
+                rows.splice(0, 1);
+
+            res.status(200).type('json').json(JSON.stringify(rows));
         }
 
-        res.status(200).type('json').json(JSON.stringify(rows));
+        db.close();
     });
 });
 
+router.get('/getAccounts', function(req, res) {
+    var db = new sqlite3.Database('./data/BANK.db');
+    db.all('SELECT * FROM accounts WHERE owner_id=' + req.query.OWNER_ID,
+        function(err, rows) {
+            if (err) {
+                console.log(err);
+                res.status(200).send('ERROR');
+            } else {
+                res.status(200).type('json').json(JSON.stringify(rows));
+            }
+
+            db.close();
+        });
+});
+
 router.get('/getEntries', function(req, res) {
-    var bankDB = new sqlite3.Database('./data/BANK.db');
-    bankDB.all('SELECT * FROM ACCOUNT_ENTRY', function(err, rows) {
+    var db = new sqlite3.Database('./data/BANK.db');
+    db.all('SELECT * FROM account_entry', function(err, rows) {
         if (err) {
             console.log(err);
-            res.status(500).send('Internal error.');
+            res.status(200).send('ERROR');
+        } else {
+            res.status(200).type('json').json(JSON.stringify(rows));
         }
 
-        res.status(200).type('json').json(JSON.stringify(rows));
+        db.close();
     });
-
-    bankDB.close();
 });
 
 router.post('/addEntry', function(req, res) {
@@ -39,7 +59,7 @@ router.post('/addEntry', function(req, res) {
 
     var entry = req.body.entry;
 
-    db.run('INSERT INTO ACCOUNT_ENTRY (USER_ID, ACCOUNT_ID, VALUE, CODE, CAUSAL, DATE) VALUES($USER_ID, $ACCOUNT_ID, $VALUE, $CODE, $CAUSAL, $DATE)',
+    db.run('INSERT INTO ACCOUNT_ENTRY (user_id, account_id, value, code, causal, date) VALUES($USER_ID, $ACCOUNT_ID, $VALUE, $CODE, $CAUSAL, $DATE)',
         { $USER_ID: entry.USER_ID, $ACCOUNT_ID: entry.ACCOUNT_ID, $CODE: entry.CODE, $VALUE: entry.VALUE, $CAUSAL: entry.CAUSAL, $DATE: entry.DATE},
         function(err) {
             if (err) {

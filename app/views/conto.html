@@ -2,6 +2,16 @@
 <div class="row row-buffer">
     <div class="col-md-5">
         <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#addEntryModal">Aggiungi Entrata</button>
+        <label>Utente:</label>
+        <select data-ng-model="selectedUser" data-ng-change="getAccountsByUser(selectedUser)">
+            <option selected="selected"></option>
+            <option data-ng-repeat="user in users" value="{{user.ID}}">{{user.USERNAME}}</option>
+        </select>
+        <label>Conto:</label>
+        <select data-ng-model="selectedAccount" data-ng-change="">
+            <option selected="selected"></option>
+            <option data-ng-repeat="account in accounts" value="{{account.ID}}">{{user.DESCRIPTION}}</option>
+        </select>
     </div>
 </div>
 
