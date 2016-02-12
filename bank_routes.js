@@ -126,6 +126,10 @@ router.post('/addEntry', function(req, res) {
 
     var entry = req.body.entry;
 
+    // Controllo valore data
+    if (!entry.DATE)
+        entry.DATE = new Date().toLocaleDateString();
+
     db.run('INSERT INTO ACCOUNT_ENTRY (user_id, account_id, value, code, causal, date) VALUES($USER_ID, $ACCOUNT_ID, $VALUE, $CODE, $CAUSAL, $DATE)',
         { $USER_ID: entry.USER_ID, $ACCOUNT_ID: entry.ACCOUNT_ID, $CODE: entry.CODE, $VALUE: entry.VALUE, $CAUSAL: entry.CAUSAL, $DATE: entry.DATE },
         function(err) {
