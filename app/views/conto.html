@@ -1,81 +1,120 @@
-<!-- Entries buttons menu -->
-<div class="row row-buffer">
-    <div class="col-md-5">
-        <button type="button"
-                class="btn btn-primary btn-xs"
-                data-toggle="modal"
-                data-target="#addEntryModal"
-                data-ng-disabled="!selectedUser || !selectedAccount">Aggiungi Entrata</button>
+<div class="wrapper container">
+    <!-- ************************************ FIRST ROW ************************************ -->
+    <div class="row row-buffer">
+        <div class="col-md-6">
+            <!-- Tasto di apertura del popup di aggiunta. Abilitato solo se entrambe le select hanno un elemento selezionato -->
+            <button type="button"
+                    class="btn btn-primary btn-xs"
+                    data-toggle="modal"
+                    data-target="#addEntryModal"
+                    data-ng-disabled="!selectedUser || !selectedAccount">Aggiungi</button>
+        </div>
+    </div>
 
-        <label>Utente:</label>
-        <select
-                data-ng-model="selectedUser"
-                ng-options="user.USERNAME for user in users track by user.ID"
-                data-ng-change="getUserAccounts()">
-            <option selected="selected"></option>
-        </select>
+    <!-- ************************************ SECOND ROW ************************************ -->
+    <div class="row row-buffer">
+        <div class="col-md-6">
+            <label>Utente:</label>
+            <select
+                    class="bank-rounded-input"
+                    data-ng-model="selectedUser"
+                    ng-options="user.USERNAME for user in users track by user.ID"
+                    data-ng-change="getUserAccounts()">
+                <option selected="selected"></option>
+            </select>
 
-        <label>Conto:</label>
-        <select
-                data-ng-model="selectedAccount"
-                ng-options="account.DESCRIPTION for account in accounts track by account.ID"
-                data-ng-change="getUserAccountEntries()">
-            <option selected="selected"></option>
-        </select>
+            <label>Conto:</label>
+            <select
+                    class="bank-rounded-input"
+                    data-ng-model="selectedAccount"
+                    ng-options="account.DESCRIPTION for account in accounts track by account.ID"
+                    data-ng-change="getUserAccountEntries()">
+                <option selected="selected"></option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label data-ng-class="{ negative_number: !positiveAccount, positive_number: positiveAccount }">Totale: {{ accountSum() | currency:"€ " }}</label>
+        </div>
+        <div class="col-md-2">
+            <label class="positive_number">Attivo: {{ activeSum() | currency:"€ " }}</label>
+        </div>
+        <div class="col-md-2">
+            <label class="negative_number">Passivo: {{ passiveSum() | currency:"€ " }}</label>
+        </div>
+    </div>
+
+    <!-- ************************************ THIRD ROW ************************************ -->
+    <div class="row row-buffer">
+        <div class="col-md-12">
+            <label>Periodo: </label>
+            <select class="bank-rounded-input" data-ng-model="filter.date">
+                <option value="0">Ultima settimana</option>
+                <option value="1">Ultimo mese</option>
+                <option value="2">Ultimi sei mesi</option>
+                <option value="3">Ultimo anno</option>
+                <option value="4">Tutto</option>
+            </select>
+
+            <label>Filtra codice: </label>
+            <input class="bank-rounded-input" data-ng-model="aaa.CODE">
+
+            <label>Filtra causale: </label>
+            <input class="bank-rounded-input" data-ng-model="aaa.CAUSAL">
+        </div>
+    </div>
+
+    <!-- ************************************ FOURTH ROW (ENTRIES TABLE) ************************************ -->
+    <div class="row row-buffer">
+        <div class="col-md-12">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th class="col-md-1">VALORE</th>
+                    <th class="col-md-1">CODICE</th>
+                    <th class="col-md-5">CAUSALE</th>
+                    <th class="col-md-1">DATA VALORE</th>
+                    <th class="col-md-2">DATA INSERIMENTO</th>
+                    <th class="col-md-2">AZIONI</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr data-ng-repeat="entry in entries | filter:aaa">
+                    <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.VALUE | currency:"€ "}}</td>
+                    <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.CODE}}</td>
+                    <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.CAUSAL}}</td>
+                    <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.DATE | date:'dd-MM-yyyy'}}</td>
+                    <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.INSERT_DATE}}</td>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-xs" data-ng-disabled="true" data-ng-click="modifyEntry(entry.ID)">Modifica</button>
+                        <button type="button" class="btn btn-danger btn-xs" data-ng-click="deleteEntry(entry.ID)">Rimuovi</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ************************************ FIFTH ROW ************************************ -->
+    <div class="row row-buffer">
+        <div class="col-md-1">
+            <!-- Tasto di apertura del popup di aggiunta. Abilitato solo se entrambe le select hanno un elemento selezionato -->
+            <button type="button"
+                    class="btn btn-primary btn-xs"
+                    data-toggle="modal"
+                    data-target="#addEntryModal"
+                    data-ng-disabled="!selectedUser || !selectedAccount">Aggiungi</button>
+        </div>
     </div>
 </div>
 
-<!-- Entries table -->
-<div class="row row-buffer">
-    <div class="col-md-12">
-        <table class="table table-bordered table-hover">
-            <thead>
-            <tr>
-                <th class="col-md-1">VALORE</th>
-                <th class="col-md-1">CODICE</th>
-                <th class="col-md-5">CAUSALE</th>
-                <th class="col-md-1">DATA VALORE</th>
-                <th class="col-md-2">DATA INSERIMENTO</th>
-                <th class="col-md-2">AZIONI</th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr data-ng-repeat="entry in entries">
-                <td>{{entry.VALUE | currency:"€"}}</td>
-                <td>{{entry.CODE}}</td>
-                <td>{{entry.CAUSAL}}</td>
-                <td>{{entry.DATE | date:'yyyy-MM-dd'}}</td>
-                <td>{{entry.INSERT_DATE}}</td>
-                <td>
-                    <button type="button" class="btn btn-warning btn-xs" data-ng-click="modifyEntry(entry.ID)">Modifica</button>
-                    <button type="button" class="btn btn-danger btn-xs">Rimuovi</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Entries buttons menu -->
-<div class="row row-buffer">
-    <div class="col-md-5">
-        <button
-                type="button"
-                class="btn btn-primary btn-xs"
-                data-toggle="modal"
-                data-target="#addEntryModal"
-                data-ng-disabled="!selectedUser || !selectedAccount">Aggiungi Entrata</button>
-    </div>
-</div>
-
-<!-- Modal -->
+<!-- ************************************ MODALS ************************************ -->
 <div class="modal fade" id="addEntryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Aggiungi entrata</h4>
+                <h4 class="modal-title" id="addEntryModalLabel"></h4>
             </div>
             <div class="modal-body">
                 <form id="addEntryForm">

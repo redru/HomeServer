@@ -6,6 +6,37 @@
                     $scope.users = JSON.parse(response.data);
                 });
 
+            $scope.accountSum = function() {
+                var sum = 0;
+                for (var idx in $scope.entries) {
+                    sum += $scope.entries[idx].VALUE;
+                }
+
+                $scope.positiveAccount = sum >= 0;
+
+                return sum;
+            };
+
+            $scope.activeSum = function() {
+                var sum = 0;
+                for (var idx in $scope.entries) {
+                    if ($scope.entries[idx].VALUE > 0)
+                        sum += $scope.entries[idx].VALUE;
+                }
+
+                return sum;
+            };
+
+            $scope.passiveSum = function() {
+                var sum = 0;
+                for (var idx in $scope.entries) {
+                    if ($scope.entries[idx].VALUE < 0)
+                        sum -= $scope.entries[idx].VALUE;
+                }
+
+                return sum;
+            };
+
             /**
              *
              * @param ownerId
@@ -62,11 +93,35 @@
                     if (response.data) {
                         $scope.entries = JSON.parse(response.data);
                         document.getElementById('addEntryForm').reset();
-                    } else {
+                    } else if (response.data == 'EMPTY') {
                         alert('Problemi durante l\'inserimento.');
                     }
                 });
             };
+
+            $scope.deleteEntry = function(id) {
+                var data = '{ "ENTRY_ID": "' + id + '", "USER_ID": "' + $scope.selectedUser.ID + '", "ACCOUNT_ID": "' + $scope.selectedAccount.ID + '" }';
+
+                if (!confirm('Confermare eliminazione?')) {
+                    return;
+                }
+
+                $http({
+                    method: 'POST',
+                    url: '/bank/deleteEntry',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: data
+                }).then(function (response) {
+                    if (response.data) {
+                        $scope.entries = JSON.parse(response.data);
+                        document.getElementById('addEntryForm').reset();
+                    } else if (response.data == 'EMPTY') {
+                        alert('Problemi durante la rimozione.');
+                    }
+                });
+            }
 
             /**
              *

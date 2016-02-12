@@ -15,7 +15,7 @@ function BankDb() {
         this.db.close();
     };
 
-    this.checkUserAccount = function (userId, accountId, callback) {
+    this.checkUserAccount = function(userId, accountId, callback) {
         this.db.all('SELECT * FROM accounts WHERE id=' + accountId + ' AND user_id=' + userId, function(err, rows) {
             if (err)
                 console.log(err);
@@ -24,15 +24,25 @@ function BankDb() {
         });
     };
 
-    this.getEntries = function (userId, accountId, callback) {
+    this.getEntries = function(userId, accountId, callback) {
         this.db.all('SELECT * FROM account_entry WHERE user_id=' + userId + ' AND account_id=' + accountId, function(err, rows) {
             if (err)
                 console.log(err);
 
             callback(err, rows);
         });
-    }
-}
+    };
+
+    this.deleteEntry = function (entryId, callback) {
+        this.db.run('DELETE FROM account_entry WHERE id=$entryId', { $entryId: entryId }, function(err) {
+            if (err)
+                console.log(err);
+
+            callback(err);
+        });
+    };
+
+};
 //***********************************************************************
 
 // define the home page route
@@ -132,13 +142,30 @@ router.post('/addEntry', function(req, res) {
                         res.status(200).send({});
                         console.log(err);
                     } else {
-                        res.status(200).type('json').json(JSON.stringify(rows ? rows : {}));
+                        res.status(200).type('json').json(JSON.stringify(rows ? rows : 'EMPTY'));
                     }
 
                     db.close();
                 });
             }
         });
+});
+
+router.post('/deleteEntry', function(req, res) {
+    var db = new BankDb();
+    db.open();
+
+    db.deleteEntry(req.body.ENTRY_ID, function(err) { // First DB call
+        if (!err) {
+            db.getEntries(req.body.USER_ID, req.body.ACCOUNT_ID, function(err, rows) { // Second DB call
+                res.status(200).type('json').json(JSON.stringify(rows ? rows : {}));
+                db.close();
+            })
+        } else {
+            res.status(200).send('EMPTY');
+            db.close();
+        }
+    });
 });
 
 module.exports = router;

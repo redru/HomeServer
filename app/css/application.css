@@ -14,9 +14,30 @@
     font-size: 16px;
 }
 
+.bank-rounded-input {
+    border: 1px solid;
+    border-radius: 6px;
+}
+
+.negative_number {
+    color: red;
+    font-style: italic;
+    font-weight: bolder;
+}
+
+.positive_number {
+    color: green;
+    font-weight: bolder;
+}
+
 .row-buffer {
     margin-bottom: 1%;
     margin-top: 1%;
+}
+
+.column-buffer {
+    margin-left: 1%;
+    margin-right: 1%;
 }
 
 .fading-line {
