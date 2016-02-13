@@ -19,6 +19,10 @@
     border-radius: 6px;
 }
 
+.bank-container {
+    width: auto;
+}
+
 .negative_number {
     color: red;
     font-style: italic;

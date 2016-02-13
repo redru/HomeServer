@@ -1,26 +1,29 @@
-<!-- Users buttons menu -->
-<div class="row row-buffer">
-    <div class="col-md-5">
-        <button type="button" class="btn btn-primary btn-xs" data-ng-click="">Aggiungi Utente</button>
-        <button type="button" class="btn btn-danger btn-xs">Elimina Utente</button>
+<div class="wrapper container bank-container">
+    <!-- Users buttons menu -->
+    <div class="row row-buffer">
+        <div class="col-md-5">
+            <button type="button" class="btn btn-primary btn-xs" data-ng-click="">Aggiungi Utente</button>
+            <button type="button" class="btn btn-danger btn-xs">Elimina Utente</button>
+        </div>
     </div>
-</div>
 
-<!-- Users table -->
-<div class="row row-buffer">
-    <div class="col-md-3">
-        <table class="table table-bordered table-hover">
-            <thead>
-            <tr>
-                <th class="col-md-4">ID</th>
-                <th class="col-md-4">USERNAME</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr data-ng-repeat="x in users">
-                <td>{{ x.ID }}</td>
-                <td>{{ x.USERNAME }}</td>
-            </tr>
-            </tbody>        </table>
+    <!-- Users table -->
+    <div class="row row-buffer">
+        <div class="col-md-3">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th class="col-md-4">ID</th>
+                    <th class="col-md-4">USERNAME</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="x in users">
+                    <td>{{ x.ID }}</td>
+                    <td>{{ x.USERNAME }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
