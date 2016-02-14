@@ -25,6 +25,7 @@
 
     };
 
+    // AngularJS, controller Class initialization
     UtentiController.$inject = [ '$scope', '$rootScope', '$http' ];
     app.controller('utenti-controller', UtentiController);
 

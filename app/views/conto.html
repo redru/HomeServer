@@ -33,13 +33,13 @@
             </select>
         </div>
         <div class="col-md-2">
-            <label data-ng-class="{ negative_number: !positiveAccount, positive_number: positiveAccount }">Totale: {{ accountSum() | currency:"€ " }}</label>
+            <label data-ng-class="{ negative_number: !balance.isActive, positive_number: balance.isActive }">Totale: {{ balance.total | currency: "€ " }}</label>
         </div>
         <div class="col-md-2">
-            <label class="positive_number">Attivo: {{ activeSum() | currency:"€ " }}</label>
+            <label class="positive_number">Attivo: {{ balance.active | currency: "€ " }}</label>
         </div>
         <div class="col-md-2">
-            <label class="negative_number">Passivo: {{ passiveSum() | currency:"€ " }}</label>
+            <label class="negative_number">Passivo: {{ balance.passive | currency: "€ " }}</label>
         </div>
     </div>
 
