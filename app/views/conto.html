@@ -56,10 +56,10 @@
             </select>
 
             <label>Filtra codice: </label>
-            <input class="bank-rounded-input" data-ng-model="aaa.CODE">
+            <input class="bank-rounded-input" data-ng-model="search.CODE">
 
             <label>Filtra causale: </label>
-            <input class="bank-rounded-input" data-ng-model="aaa.CAUSAL">
+            <input class="bank-rounded-input" data-ng-model="search.CAUSAL">
         </div>
     </div>
 
@@ -79,7 +79,7 @@
                 </thead>
 
                 <tbody>
-                <tr data-ng-repeat="entry in entries | filter:aaa">
+                <tr data-ng-repeat="entry in entries | filter: search">
                     <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.VALUE | currency:"€ "}}</td>
                     <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.CODE}}</td>
                     <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.CAUSAL}}</td>
