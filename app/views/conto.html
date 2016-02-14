@@ -7,7 +7,7 @@
                     class="btn btn-primary btn-xs"
                     data-toggle="modal"
                     data-target="#addEntryModal"
-                    data-ng-disabled="!selectedUser || !selectedAccount">Aggiungi</button>
+                    data-ng-disabled="!select.selectedUser || !select.selectedAccount">Aggiungi</button>
         </div>
     </div>
 
@@ -17,7 +17,7 @@
             <label>Utente:</label>
             <select
                     class="bank-rounded-input"
-                    data-ng-model="selectedUser"
+                    data-ng-model="select.selectedUser"
                     ng-options="user.USERNAME for user in users track by user.ID"
                     data-ng-change="getUserAccounts()">
                 <option selected="selected"></option>
@@ -26,7 +26,7 @@
             <label>Conto:</label>
             <select
                     class="bank-rounded-input"
-                    data-ng-model="selectedAccount"
+                    data-ng-model="select.selectedAccount"
                     ng-options="account.DESCRIPTION for account in accounts track by account.ID"
                     data-ng-change="getUserAccountEntries()">
                 <option selected="selected"></option>
@@ -103,7 +103,7 @@
                     class="btn btn-primary btn-xs"
                     data-toggle="modal"
                     data-target="#addEntryModal"
-                    data-ng-disabled="!selectedUser || !selectedAccount">Aggiungi</button>
+                    data-ng-disabled="!select.selectedUser || !select.selectedAccount">Aggiungi</button>
         </div>
     </div>
 </div>
@@ -119,8 +119,8 @@
             <div class="modal-body">
                 <form id="addEntryForm">
                     <fieldset class="form-group">
-                        <span class="label label-primary bank-label">{{selectedUser.USERNAME}}</span>
-                        <span class="label label-primary bank-label">{{selectedAccount.DESCRIPTION}}</span>
+                        <span class="label label-primary bank-label">{{select.selectedUser.USERNAME}}</span>
+                        <span class="label label-primary bank-label">{{select.selectedAccount.DESCRIPTION}}</span>
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="value">Valore</label>

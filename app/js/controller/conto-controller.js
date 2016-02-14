@@ -6,6 +6,7 @@
         _this.$rootScope = $rootScope;
         _this.$http = $http;
 
+        // $scope definition objects --------------------------------------------------
         $scope.balance = {
             total: 0,
             active: 0,
@@ -19,6 +20,12 @@
                 this.isActive = true;
             }
         };
+
+        $scope.select = {
+            selectedUser: {},
+            selectedAccount: {}
+        };
+        // ----------------------------------------------------------------------------
 
         $scope.processBalance = function() {
             _this.processBalance();
@@ -73,16 +80,16 @@
 
         $scope.accounts = [];
         $scope.entries = [];
-        $scope.selectedAccount = '';
+        $scope.select.selectedAccount = '';
         $scope.balance.reset();
 
-        if (!$scope.selectedUser)
+        if (!$scope.select.selectedUser)
             return;
 
         $http({
             url: '/bank/getAccounts',
             method: 'GET',
-            params: {USER_ID: $scope.selectedUser.ID},
+            params: {USER_ID: $scope.select.selectedUser.ID},
 
         }).then(function (response) {
             var accounts = JSON.parse(response.data);
@@ -97,13 +104,13 @@
         $scope.entries = [];
         $scope.balance.reset();
 
-        if (!$scope.selectedUser || !$scope.selectedAccount)
+        if (!$scope.select.selectedUser || !$scope.select.selectedAccount)
             return;
 
         $http({
             url: '/bank/getEntries',
             method: 'GET',
-            params: {USER_ID: $scope.selectedUser.ID, ACCOUNT_ID: $scope.selectedAccount.ID},
+            params: {USER_ID: $scope.select.selectedUser.ID, ACCOUNT_ID: $scope.select.selectedAccount.ID},
 
         }).then(function (response) {
             $scope.entries = JSON.parse(response.data);
@@ -115,8 +122,8 @@
         var $scope = this.$scope;
         var $http = this.$http;
 
-        $scope.addEntryModel.entry.USER_ID = $scope.selectedUser.ID;
-        $scope.addEntryModel.entry.ACCOUNT_ID = $scope.selectedAccount.ID;
+        $scope.addEntryModel.entry.USER_ID = $scope.select.selectedUser.ID;
+        $scope.addEntryModel.entry.ACCOUNT_ID = $scope.select.selectedAccount.ID;
 
         $http({
             method: 'POST',
@@ -139,7 +146,7 @@
     ContoController.prototype.deleteEntry = function(id) {
         var $scope = this.$scope;
         var $http = this.$http;
-        var data = '{ "ENTRY_ID": "' + id + '", "USER_ID": "' + $scope.selectedUser.ID + '", "ACCOUNT_ID": "' + $scope.selectedAccount.ID + '" }';
+        var data = '{ "ENTRY_ID": "' + id + '", "USER_ID": "' + $scope.select.selectedUser.ID + '", "ACCOUNT_ID": "' + $scope.select.selectedAccount.ID + '" }';
 
         if (!confirm('Confermare eliminazione?')) {
             return;
