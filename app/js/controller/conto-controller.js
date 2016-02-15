@@ -26,6 +26,7 @@
             CODE: '',
             CAUSAL: '',
             DATE: '',
+            isUpdate: false,
 
             reset: function() {
                 this.VALUE = 0;
