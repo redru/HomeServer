@@ -20,15 +20,6 @@ app.get('/favicon.ico', function(req, res) {
     }
 });
 
-// Files routing
-app.get('/app/*.*', function(req, res) {
-    if (fs.existsSync(__dirname + req.url)) {
-        res.status(200).sendFile(__dirname + req.url);
-    } else {
-        res.status(404).send('Not found.');
-    }
-});
-
 // node_modules routing
 app.get('/node_modules/*.*', function(req, res) {
     if (fs.existsSync(__dirname + req.url)) {

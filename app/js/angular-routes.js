@@ -3,19 +3,19 @@
         function($routeProvider) {
             $routeProvider.
             when('/Home', {
-                templateUrl: '/app/views/home.html',
+                templateUrl: '/bank/views/home.html',
                 controller: 'home-controller'
             }).
             when('/Utenti', {
-                templateUrl: '/app/views/utenti.html',
+                templateUrl: '/bank/views/utenti.html',
                 controller: 'utenti-controller'
             }).
             when('/Conto', {
-                templateUrl: '/app/views/conto.html',
+                templateUrl: '/bank/views/conto.html',
                 controller: 'conto-controller'
             }).
             when('/Complessivo', {
-                templateUrl: '/app/views/complessivo.html',
+                templateUrl: '/bank/views/complessivo.html',
                 controller: 'complessivo-controller'
             }).
             otherwise({

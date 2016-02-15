@@ -1,3 +1,5 @@
+var fs = require('fs');
+var bcrypt = require('bcryptjs');
 var express = require('express');
 var sqlite3 = require('sqlite3').verbose();
 var router = express.Router();
@@ -13,6 +15,18 @@ function BankDb() {
 
     this.close = function() {
         this.db.close();
+    };
+
+    this.getUser = function(username, password, callback) {
+        var salt = bcrypt.genSaltSync(10);
+        var hash = bcrypt.hashSync(password, salt);
+
+        this.db.all('SELECT * FROM users WHERE username=' + username + ' AND password=' + hash, function(err, rows) {
+            if (err)
+                console.log(err);
+
+            callback(err, rows);
+        });
     };
 
     this.checkUserAccount = function(userId, accountId, callback) {
@@ -48,6 +62,14 @@ function BankDb() {
 // define the home page route
 router.get('/', function(req, res) {
     res.status(200).sendFile(__dirname + '/app/index.html');
+});
+
+router.get('/*.*', function(req, res) {
+    if (fs.existsSync(__dirname + '/app' + req.url)) {
+        res.status(200).sendFile(__dirname + '/app' + req.url);
+    } else {
+        res.status(404).send('Not found.');
+    }
 });
 
 /**
