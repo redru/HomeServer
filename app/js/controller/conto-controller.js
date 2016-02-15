@@ -21,18 +21,20 @@
             }
         };
 
-        $scope.addEntryModel.entry = {
-            VALUE: 0,
-            CODE: '',
-            CAUSAL: '',
-            DATE: '',
-            isUpdate: false,
+        $scope.addEntryModel = {
+            entry: {
+                VALUE: 0,
+                CODE: '',
+                CAUSAL: '',
+                DATE: '',
+                isUpdate: false,
 
-            reset: function() {
-                this.VALUE = 0;
-                this.CODE = '';
-                this.CAUSAL = '';
-                this.DATE = '';
+                reset: function() {
+                    this.VALUE = 0;
+                    this.CODE = '';
+                    this.CAUSAL = '';
+                    this.DATE = '';
+                }
             }
         };
 
