@@ -86,7 +86,7 @@
                     <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.DATE | date:'dd-MM-yyyy'}}</td>
                     <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.INSERT_DATE}}</td>
                     <td>
-                        <button type="button" class="btn btn-warning btn-xs" data-ng-disabled="true" data-ng-click="modifyEntry(entry.ID)">Modifica</button>
+                        <button type="button" class="btn btn-warning btn-xs" data-ng-disabled="true" data-ng-click="modifyEntry(entry)">Modifica</button>
                         <button type="button" class="btn btn-danger btn-xs" data-ng-click="deleteEntry(entry.ID)">Rimuovi</button>
                     </td>
                 </tr>

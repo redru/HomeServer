@@ -21,6 +21,20 @@
             }
         };
 
+        $scope.addEntryModel.entry = {
+            VALUE: 0,
+            CODE: '',
+            CAUSAL: '',
+            DATE: '',
+
+            reset: function() {
+                this.VALUE = 0;
+                this.CODE = '';
+                this.CAUSAL = '';
+                this.DATE = '';
+            }
+        };
+
         $scope.select = {
             selectedUser: {},
             selectedAccount: {}
