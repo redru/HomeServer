@@ -58,6 +58,17 @@ function BankDb() {
             });
     };
 
+    this.updateEntry = function(parameters, callback) {
+        this.db.run('UPDATE account_entry SET user_id=$USER_ID, account_id=$ACCOUNT_ID, value=$VALUE, code=$CODE, causal=$CAUSAL, date=$DATE, insert_date=$INSERT_DATE WHERE id=$ID',
+            { $USER_ID: parameters.USER_ID, $ACCOUNT_ID: parameters.ACCOUNT_ID, $CODE: parameters.CODE, $VALUE: parameters.VALUE, $CAUSAL: parameters.CAUSAL, $DATE: parameters.DATE, $INSERT_DATE: parameters.INSERT_DATE, $ID: parameters.ID },
+            function(err) {
+                if (err)
+                    console.log(err);
+
+                callback(err);
+            });
+    };
+
     this.deleteEntry = function (entryId, callback) {
         this.db.run('DELETE FROM account_entry WHERE id=$entryId', { $entryId: entryId }, function(err) {
             if (err)
@@ -153,27 +164,24 @@ router.get('/getEntries', function(req, res) {
 /**
  *
  */
-router.post('/addEntry', function(req, res) {
+router.post('/addOrUpdateEntry', function(req, res) {
     var postData = req.body;
-    debugger;
 
     // Controllo valore data
     if (!postData.DATE)
         postData.DATE = new Date().toLocaleDateString();
 
-    var db = new BankDb();
-    db.open();
+    postData.INSERT_DATE = new Date().toLocaleString();
 
-    db.insertEntry(postData, function(err) {
+    var db = new BankDb();
+    var callback = function (err) {
         if (err) {
             res.status(200).send({});
-            console.log(err);
             db.close();
         } else {
-            db.getEntries(postData.USER_ID, postData.ACCOUNT_ID, function(err, rows) {
+            db.getEntries(postData.USER_ID, postData.ACCOUNT_ID, function (err, rows) {
                 if (err) {
                     res.status(200).send({});
-                    console.log(err);
                 } else {
                     res.status(200).type('json').json(JSON.stringify(rows ? rows : 'EMPTY'));
                 }
@@ -181,7 +189,14 @@ router.post('/addEntry', function(req, res) {
                 db.close();
             });
         }
-    });
+    };
+
+    db.open();
+    if (postData.UPDATE)
+        db.updateEntry(postData, callback);
+    else
+        db.insertEntry(postData, callback);
+
 });
 
 router.post('/deleteEntry', function(req, res) {

@@ -103,15 +103,10 @@
         });
     };
 
-    ContoController.prototype.addEntry = function() {
-        var $http = this.$http;
-
-        this.dataEntryModel.USER_ID = this.select.selectedUser.ID;
-        this.dataEntryModel.ACCOUNT_ID = this.select.selectedAccount.ID;
-
-        $http({
+    ContoController.prototype.addOrUpdateEntry = function() {
+        this.$http({
             method: 'POST',
-            url: '/bank/addEntry',
+            url: '/bank/addOrUpdateEntry',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -156,7 +151,7 @@
         this.dataEntryModel.ID = entry.ID;
         this.dataEntryModel.USER_ID = entry.USER_ID;
         this.dataEntryModel.ACCOUNT_ID = entry.ACCOUNT_ID;
-        this.dataEntryModel.VALUE = entry.VALUE
+        this.dataEntryModel.VALUE = entry.VALUE;
         this.dataEntryModel.CODE = entry.CODE;
         this.dataEntryModel.CAUSAL = entry.CAUSAL;
         this.dataEntryModel.DATE = new Date(entry.DATE);
