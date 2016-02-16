@@ -1,151 +1,163 @@
-<div class="wrapper container bank-container">
-    <!-- ************************************ FIRST ROW ************************************ -->
-    <div class="row row-buffer">
-        <div class="col-md-6">
-            <!-- Tasto di apertura del popup di aggiunta. Abilitato solo se entrambe le select hanno un elemento selezionato -->
-            <button type="button"
-                    class="btn btn-primary btn-xs"
-                    data-toggle="modal"
-                    data-target="#addEntryModal"
-                    data-ng-disabled="!select.selectedUser || !select.selectedAccount">Aggiungi</button>
-        </div>
-    </div>
-
-    <!-- ************************************ SECOND ROW ************************************ -->
-    <div class="row row-buffer">
-        <div class="col-md-6">
-            <label>Utente:</label>
-            <select
-                    class="bank-rounded-input"
-                    data-ng-model="select.selectedUser"
-                    ng-options="user.USERNAME for user in users track by user.ID"
-                    data-ng-change="getUserAccounts()">
-                <option selected="selected"></option>
-            </select>
-
-            <label>Conto:</label>
-            <select
-                    class="bank-rounded-input"
-                    data-ng-model="select.selectedAccount"
-                    ng-options="account.DESCRIPTION for account in accounts track by account.ID"
-                    data-ng-change="getUserAccountEntries()">
-                <option selected="selected"></option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <label data-ng-class="{ negative_number: !balance.isActive, positive_number: balance.isActive }">Totale: {{ balance.total | currency: "€ " }}</label>
-        </div>
-        <div class="col-md-2">
-            <label class="positive_number">Attivo: {{ balance.active | currency: "€ " }}</label>
-        </div>
-        <div class="col-md-2">
-            <label class="negative_number">Passivo: {{ balance.passive | currency: "€ " }}</label>
-        </div>
-    </div>
-
-    <!-- ************************************ THIRD ROW ************************************ -->
-    <div class="row row-buffer">
-        <div class="col-md-12">
-            <label>Periodo: </label>
-            <select class="bank-rounded-input" data-ng-model="filter.date">
-                <option value="0">Ultima settimana</option>
-                <option value="1">Ultimo mese</option>
-                <option value="2">Ultimi sei mesi</option>
-                <option value="3">Ultimo anno</option>
-                <option value="4">Tutto</option>
-            </select>
-
-            <label>Filtra codice: </label>
-            <input class="bank-rounded-input" data-ng-model="search.CODE">
-
-            <label>Filtra causale: </label>
-            <input class="bank-rounded-input" data-ng-model="search.CAUSAL">
-        </div>
-    </div>
-
-    <!-- ************************************ FOURTH ROW (ENTRIES TABLE) ************************************ -->
-    <div class="row row-buffer">
-        <div class="col-md-12">
-            <table class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th class="col-md-1">VALORE</th>
-                    <th class="col-md-1">CODICE</th>
-                    <th class="col-md-5">CAUSALE</th>
-                    <th class="col-md-1">DATA VALORE</th>
-                    <th class="col-md-2">DATA INSERIMENTO</th>
-                    <th class="col-md-2"></th>
-                </tr>
-                </thead>
-
-                <tbody>
-                <tr data-ng-repeat="entry in entries | filter: search">
-                    <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.VALUE | currency:"€ "}}</td>
-                    <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.CODE}}</td>
-                    <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.CAUSAL}}</td>
-                    <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.DATE | date:'dd-MM-yyyy'}}</td>
-                    <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.INSERT_DATE}}</td>
-                    <td>
-                        <button type="button" class="btn btn-warning btn-xs" data-ng-disabled="true" data-ng-click="modifyEntry(entry)">Modifica</button>
-                        <button type="button" class="btn btn-danger btn-xs" data-ng-click="deleteEntry(entry.ID)">Rimuovi</button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- ************************************ FIFTH ROW ************************************ -->
-    <div class="row row-buffer">
-        <div class="col-md-1">
-            <!-- Tasto di apertura del popup di aggiunta. Abilitato solo se entrambe le select hanno un elemento selezionato -->
-            <button type="button"
-                    class="btn btn-primary btn-xs"
-                    data-toggle="modal"
-                    data-target="#addEntryModal"
-                    data-ng-disabled="!select.selectedUser || !select.selectedAccount">Aggiungi</button>
-        </div>
-    </div>
-</div>
-
-<!-- ************************************ MODALS ************************************ -->
-<div class="modal fade" id="addEntryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="addEntryModalLabel"></h4>
+<div ng-controller="ContoController as ctrl">
+    <div class="wrapper container bank-container">
+        <!-- ************************************ FIRST ROW ************************************ -->
+        <div class="row row-buffer">
+            <div class="col-md-6">
+                <!-- Tasto di apertura del popup di aggiunta. Abilitato solo se entrambe le select hanno un elemento selezionato -->
+                <button type="button"
+                        class="btn btn-primary btn-xs"
+                        data-toggle="modal"
+                        data-target="#addEntryModal"
+                        data-ng-disabled="!ctrl.select.selectedUser || !ctrl.select.selectedAccount"
+                        data-ng-click="ctrl.dataEntryModel.reset()">Aggiungi</button>
             </div>
-            <div class="modal-body">
-                <form id="addEntryForm">
-                    <fieldset class="form-group">
-                        <span class="label label-primary bank-label">{{select.selectedUser.USERNAME}}</span>
-                        <span class="label label-primary bank-label">{{select.selectedAccount.DESCRIPTION}}</span>
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <label for="value">Valore</label>
-                        <input type="number" step="0.01" class="form-control" id="value" autocomplete="off" placeholder="Valore in euro" data-ng-model="addEntryModel.entry.VALUE">
-                        <!-- <small class="text-muted">We'll never share your email with anyone else.</small> -->
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <label for="code">Codice inserimento</label>
-                        <input type="text" class="form-control" id="code" autocomplete="off" placeholder="Codice inserimento" data-ng-model="addEntryModel.entry.CODE">
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <label for="causal">Descrizione causale</label>
-                        <input type="text" class="form-control" id="causal" autocomplete="off" placeholder="Descrizione causale" data-ng-model="addEntryModel.entry.CAUSAL">
-                    </fieldset>
-                    <fieldset class="form-group">
-                        <label for="date">Data valore</label>
-                        <input type="date" class="form-control" id="date" autocomplete="off" placeholder="Data valore" data-ng-model="addEntryModel.entry.DATE">
-                    </fieldset>
+        </div>
 
-                    <button class="btn btn-primary" data-ng-click="addEntry()">Salva</button>
-                    <button type="reset" class="btn btn-default">Pulisci</button>
-                </form>
+        <!-- ************************************ SECOND ROW ************************************ -->
+        <div class="row row-buffer">
+            <div class="col-md-6">
+                <label>Utente:</label>
+                <select
+                        class="bank-rounded-input"
+                        data-ng-model="ctrl.select.selectedUser"
+                        data-ng-options="user.USERNAME for user in ctrl.users track by user.ID"
+                        data-ng-change="ctrl.getAccounts()">
+                    <option selected="selected"></option>
+                </select>
+
+                <label>Conto:</label>
+                <select
+                        class="bank-rounded-input"
+                        data-ng-model="ctrl.select.selectedAccount"
+                        ng-options="account.DESCRIPTION for account in ctrl.accounts track by account.ID"
+                        data-ng-change="ctrl.getAccountEntries()">
+                    <option selected="selected"></option>
+                </select>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+            <div class="col-md-2">
+                <label data-ng-class="{ negative_number: !ctrl.balance.isActive, positive_number: ctrl.balance.isActive }">Totale: {{ ctrl.balance.total | currency: "€ " }}</label>
+            </div>
+            <div class="col-md-2">
+                <label class="positive_number">Attivo: {{ ctrl.balance.active | currency: "€ " }}</label>
+            </div>
+            <div class="col-md-2">
+                <label class="negative_number">Passivo: {{ ctrl.balance.passive | currency: "€ " }}</label>
+            </div>
+        </div>
+
+        <!-- ************************************ THIRD ROW ************************************ -->
+        <div class="row row-buffer">
+            <div class="col-md-12">
+                <label>Periodo: </label>
+                <select class="bank-rounded-input" data-ng-model="filter.date">
+                    <option value="0">Ultima settimana</option>
+                    <option value="1">Ultimo mese</option>
+                    <option value="2">Ultimi sei mesi</option>
+                    <option value="3">Ultimo anno</option>
+                    <option value="4">Tutto</option>
+                </select>
+
+                <label>Filtra codice: </label>
+                <input class="bank-rounded-input" data-ng-model="search.CODE">
+
+                <label>Filtra causale: </label>
+                <input class="bank-rounded-input" data-ng-model="search.CAUSAL">
+            </div>
+        </div>
+
+        <!-- ************************************ FOURTH ROW (ENTRIES TABLE) ************************************ -->
+        <div class="row row-buffer">
+            <div class="col-md-12">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th class="col-md-1">VALORE</th>
+                        <th class="col-md-1">CODICE</th>
+                        <th class="col-md-5">CAUSALE</th>
+                        <th class="col-md-1">DATA VALORE</th>
+                        <th class="col-md-2">DATA INSERIMENTO</th>
+                        <th class="col-md-2"></th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr data-ng-repeat="entry in ctrl.entries | filter: search">
+                        <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.VALUE | currency:"€ "}}</td>
+                        <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.CODE}}</td>
+                        <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.CAUSAL}}</td>
+                        <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.DATE | date:'dd-MM-yyyy'}}</td>
+                        <td data-ng-class="{ negative_number: entry.VALUE < 0, positive_number: entry.VALUE >= 0 }">{{entry.INSERT_DATE}}</td>
+                        <td>
+                            <button
+                                    type="button"
+                                    class="btn btn-warning btn-xs"
+                                    data-toggle="modal"
+                                    data-target="#addEntryModal"
+                                    data-ng-click="ctrl.prepareDataEntryModelForUpdate(entry)">Modifica</button>
+
+                            <button type="button"
+                                    class="btn btn-danger btn-xs"
+                                    data-ng-click="ctrl.deleteEntry(entry.ID)">Rimuovi</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ************************************ FIFTH ROW ************************************ -->
+        <div class="row row-buffer">
+            <div class="col-md-1">
+                <!-- Tasto di apertura del popup di aggiunta. Abilitato solo se entrambe le select hanno un elemento selezionato -->
+                <button type="button"
+                        class="btn btn-primary btn-xs"
+                        data-toggle="modal"
+                        data-target="#addEntryModal"
+                        data-ng-disabled="!ctrl.select.selectedUser || !ctrl.select.selectedAccount"
+                        data-ng-click="ctrl.dataEntryModel.reset()">Aggiungi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ************************************ MODALS ************************************ -->
+    <div class="modal fade" id="addEntryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="addEntryModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addEntryForm">
+                        <fieldset class="form-group">
+                            <span class="label label-primary bank-label">{{ ctrl.select.selectedUser.USERNAME }}</span>
+                            <span class="label label-primary bank-label">{{ ctrl.select.selectedAccount.DESCRIPTION }}</span>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="value">Valore</label>
+                            <input type="number" step="0.01" class="form-control" id="value" autocomplete="off" placeholder="Valore in euro" data-ng-model="ctrl.dataEntryModel.VALUE">
+                            <!-- <small class="text-muted">We'll never share your email with anyone else.</small> -->
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="code">Codice inserimento</label>
+                            <input type="text" class="form-control" id="code" autocomplete="off" placeholder="Codice inserimento" data-ng-model="ctrl.dataEntryModel.CODE">
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="causal">Descrizione causale</label>
+                            <input type="text" class="form-control" id="causal" autocomplete="off" placeholder="Descrizione causale" data-ng-model="ctrl.dataEntryModel.CAUSAL">
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <label for="date">Data valore</label>
+                            <input type="date" class="form-control" id="date" autocomplete="off" placeholder="Data valore" data-ng-model="ctrl.dataEntryModel.DATE">
+                        </fieldset>
+
+                        <button class="btn btn-primary" data-ng-click="ctrl.addEntry()">Salva</button>
+                        <button type="reset" class="btn btn-default">Pulisci</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+                </div>
             </div>
         </div>
     </div>

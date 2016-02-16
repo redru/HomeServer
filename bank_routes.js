@@ -47,6 +47,17 @@ function BankDb() {
         });
     };
 
+    this.insertEntry = function(parameters, callback) {
+        this.db.run('INSERT INTO ACCOUNT_ENTRY (user_id, account_id, value, code, causal, date) VALUES($USER_ID, $ACCOUNT_ID, $VALUE, $CODE, $CAUSAL, $DATE)',
+            { $USER_ID: parameters.USER_ID, $ACCOUNT_ID: parameters.ACCOUNT_ID, $CODE: parameters.CODE, $VALUE: parameters.VALUE, $CAUSAL: parameters.CAUSAL, $DATE: parameters.DATE },
+            function(err) {
+                if (err)
+                    console.log(err);
+
+                callback(err);
+            });
+    };
+
     this.deleteEntry = function (entryId, callback) {
         this.db.run('DELETE FROM account_entry WHERE id=$entryId', { $entryId: entryId }, function(err) {
             if (err)
@@ -143,38 +154,34 @@ router.get('/getEntries', function(req, res) {
  *
  */
 router.post('/addEntry', function(req, res) {
-    var db = new sqlite3.Database('./data/BANK.db');
-    db.all('PRAGMA foreign_keys = ON');
-
-    var entry = req.body.entry;
+    var postData = req.body;
+    debugger;
 
     // Controllo valore data
-    if (!entry.DATE)
-        entry.DATE = new Date().toLocaleDateString();
+    if (!postData.DATE)
+        postData.DATE = new Date().toLocaleDateString();
 
-    db.run('INSERT INTO ACCOUNT_ENTRY (user_id, account_id, value, code, causal, date) VALUES($USER_ID, $ACCOUNT_ID, $VALUE, $CODE, $CAUSAL, $DATE)',
-        { $USER_ID: entry.USER_ID, $ACCOUNT_ID: entry.ACCOUNT_ID, $CODE: entry.CODE, $VALUE: entry.VALUE, $CAUSAL: entry.CAUSAL, $DATE: entry.DATE },
-        function(err) {
-            if (err) {
-                res.status(200).send({});
-                console.log(err);
-                db.close();
-            } else {
-                db.close();
-                db = new BankDb();
-                db.open();
-                db.getEntries(entry.USER_ID, entry.ACCOUNT_ID, function(err, rows) {
-                    if (err) {
-                        res.status(200).send({});
-                        console.log(err);
-                    } else {
-                        res.status(200).type('json').json(JSON.stringify(rows ? rows : 'EMPTY'));
-                    }
+    var db = new BankDb();
+    db.open();
 
-                    db.close();
-                });
-            }
-        });
+    db.insertEntry(postData, function(err) {
+        if (err) {
+            res.status(200).send({});
+            console.log(err);
+            db.close();
+        } else {
+            db.getEntries(postData.USER_ID, postData.ACCOUNT_ID, function(err, rows) {
+                if (err) {
+                    res.status(200).send({});
+                    console.log(err);
+                } else {
+                    res.status(200).type('json').json(JSON.stringify(rows ? rows : 'EMPTY'));
+                }
+
+                db.close();
+            });
+        }
+    });
 });
 
 router.post('/deleteEntry', function(req, res) {

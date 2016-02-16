@@ -12,7 +12,7 @@
             }).
             when('/Conto', {
                 templateUrl: '/bank/views/conto.html',
-                controller: 'conto-controller'
+                controller: 'ContoController'
             }).
             when('/Complessivo', {
                 templateUrl: '/bank/views/complessivo.html',

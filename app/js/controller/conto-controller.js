@@ -1,13 +1,35 @@
 (function() {
 
-    var ContoController = function($scope, $rootScope, $http) {
-        var _this = this;
-        _this.$scope = $scope;
-        _this.$rootScope = $rootScope;
-        _this.$http = $http;
+    var ContoController = function($http) {
+        this.$http = $http;
 
-        // $scope definition objects --------------------------------------------------
-        $scope.balance = {
+        this.users = [];
+        this.accounts = [];
+        this.entries = [];
+
+        this.dataEntryModel = {
+            ID: '',
+            USER_ID: '',
+            ACCOUNT_ID: '',
+            VALUE: '',
+            CODE: '',
+            CAUSAL: '',
+            DATE: '',
+            UPDATE: false,
+
+            reset: function() {
+                this.ID = '';
+                this.USER_ID = '';
+                this.ACCOUNT_ID = '';
+                this.VALUE = '';
+                this.CODE = '';
+                this.CAUSAL = '';
+                this.DATE = '';
+                this.UPDATE = false;
+            }
+        }
+
+        this.balance = {
             total: 0,
             active: 0,
             passive: 0,
@@ -21,126 +43,71 @@
             }
         };
 
-        $scope.addEntryModel = {
-            entry: {
-                VALUE: 0,
-                CODE: '',
-                CAUSAL: '',
-                DATE: '',
-                isUpdate: false,
+        this.select = {
+            selectedUser: {
+                ID: '',
+                USERNAME: ''
+            },
 
-                reset: function() {
-                    this.VALUE = 0;
-                    this.CODE = '';
-                    this.CAUSAL = '';
-                    this.DATE = '';
-                }
+            selectedAccount: {
+                ID: '',
+                DESCRIPTION: ''
             }
         };
 
-        $scope.select = {
-            selectedUser: {},
-            selectedAccount: {}
-        };
-        // ----------------------------------------------------------------------------
+        this.getUsers();
+    };
 
-        $scope.processBalance = function() {
-            _this.processBalance();
-        };
-
-        $scope.getUserAccounts = function() {
-            _this.getUserAccounts();
-        };
-
-        $scope.getUserAccountEntries = function() {
-            _this.getUserAccountEntries();
-        };
-
-        $scope.addEntry = function() {
-            _this.addEntry();
-        };
-
-        $scope.deleteEntry = function(id) {
-            _this.deleteEntry(id);
-        };
-
-        $scope.modifyEntry = function(id) {
-            _this.modifyEntry(id);
-        };
-
-        $http.get('/bank/getUsers')
-            .then(function (response) {
-                $scope.users = JSON.parse(response.data);
+    ContoController.prototype.getUsers = function() {
+        this.$http.get('/bank/getUsers')
+            .then((response) => {
+                this.users = JSON.parse(response.data);
             });
-
     };
 
-    ContoController.prototype.processBalance = function() {
-        var $scope = this.$scope;
-        $scope.balance.reset();
+    ContoController.prototype.getAccounts = function() {
+        this.accounts = [];
+        this.entries = [];
+        this.select.selectedAccount = '';
+        this.balance.reset();
 
-        for (var idx in $scope.entries) {
-            if ($scope.entries[idx].VALUE > 0)
-                $scope.balance.active += $scope.entries[idx].VALUE;
-            else
-                $scope.balance.passive += $scope.entries[idx].VALUE;
-
-            $scope.balance.total += $scope.entries[idx].VALUE;
-        }
-
-        $scope.balance.isActive = $scope.balance.total >= 0;
-    };
-
-    ContoController.prototype.getUserAccounts = function() {
-        var $scope = this.$scope;
-        var $http = this.$http;
-
-        $scope.accounts = [];
-        $scope.entries = [];
-        $scope.select.selectedAccount = '';
-        $scope.balance.reset();
-
-        if (!$scope.select.selectedUser)
+        if (!this.select.selectedUser)
             return;
 
-        $http({
+        this.$http({
             url: '/bank/getAccounts',
             method: 'GET',
-            params: {USER_ID: $scope.select.selectedUser.ID},
+            params: { USER_ID: this.select.selectedUser.ID },
 
-        }).then(function (response) {
-            var accounts = JSON.parse(response.data);
-            $scope.accounts = accounts ? accounts : [];
+        }).then((response) => {
+            var data = JSON.parse(response.data);
+            this.accounts = data ? data : [];
         });
     };
 
-    ContoController.prototype.getUserAccountEntries = function() {
-        var $scope = this.$scope;
-        var $http = this.$http;
+    ContoController.prototype.getAccountEntries = function() {
+        this.entries = [];
+        this.balance.reset();
 
-        $scope.entries = [];
-        $scope.balance.reset();
-
-        if (!$scope.select.selectedUser || !$scope.select.selectedAccount)
+        if (!this.select.selectedUser || !this.select.selectedAccount)
             return;
 
-        $http({
+        this.$http({
             url: '/bank/getEntries',
             method: 'GET',
-            params: {USER_ID: $scope.select.selectedUser.ID, ACCOUNT_ID: $scope.select.selectedAccount.ID},
+            params: { USER_ID: this.select.selectedUser.ID, ACCOUNT_ID: this.select.selectedAccount.ID },
 
-        }).then(function (response) {
-            $scope.entries = JSON.parse(response.data);
-            $scope.processBalance();
+        }).then((response) => {
+            this.entries = JSON.parse(response.data);
+            this.processBalance();
         });
     };
 
     ContoController.prototype.addEntry = function() {
-        var $scope = this.$scope;
         var $http = this.$http;
 
-        $scope.addEntryModel.entry.USER_ID = $scope.select.selectedUser.ID;
-        $scope.addEntryModel.entry.ACCOUNT_ID = $scope.select.selectedAccount.ID;
+        this.dataEntryModel.USER_ID = this.select.selectedUser.ID;
+        this.dataEntryModel.ACCOUNT_ID = this.select.selectedAccount.ID;
 
         $http({
             method: 'POST',
@@ -148,11 +115,11 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: JSON.stringify($scope.addEntryModel)
-        }).then(function (response) {
+            data: JSON.stringify(this.dataEntryModel)
+        }).then((response) => {
             if (response.data) {
-                $scope.entries = JSON.parse(response.data);
-                $scope.processBalance();
+                this.entries = JSON.parse(response.data);
+                this.processBalance();
                 document.getElementById('addEntryForm').reset();
             } else if (response.data == 'EMPTY') {
                 alert('Problemi durante l\'inserimento.');
@@ -161,9 +128,8 @@
     };
 
     ContoController.prototype.deleteEntry = function(id) {
-        var $scope = this.$scope;
         var $http = this.$http;
-        var data = '{ "ENTRY_ID": "' + id + '", "USER_ID": "' + $scope.select.selectedUser.ID + '", "ACCOUNT_ID": "' + $scope.select.selectedAccount.ID + '" }';
+        var data = '{ "ENTRY_ID": "' + id + '", "USER_ID": "' + this.select.selectedUser.ID + '", "ACCOUNT_ID": "' + this.select.selectedAccount.ID + '" }';
 
         if (!confirm('Confermare eliminazione?')) {
             return;
@@ -176,24 +142,44 @@
                 'Content-Type': 'application/json'
             },
             data: data
-        }).then(function (response) {
+        }).then((response) => {
             if (response.data) {
-                $scope.entries = JSON.parse(response.data);
-                $scope.processBalance();
+                this.entries = JSON.parse(response.data);
+                this.processBalance();
             } else if (response.data == 'EMPTY') {
                 alert('Problemi durante la rimozione.');
             }
         });
     };
 
-    ContoController.prototype.modifyEntry = function(id) {
-        var $scope = this.$scope;
-        var $http = this.$http;
-        alert('Entry da modificare: ' + id);
+    ContoController.prototype.prepareDataEntryModelForUpdate = function(entry) {
+        this.dataEntryModel.ID = entry.ID;
+        this.dataEntryModel.USER_ID = entry.USER_ID;
+        this.dataEntryModel.ACCOUNT_ID = entry.ACCOUNT_ID;
+        this.dataEntryModel.VALUE = entry.VALUE
+        this.dataEntryModel.CODE = entry.CODE;
+        this.dataEntryModel.CAUSAL = entry.CAUSAL;
+        this.dataEntryModel.DATE = new Date(entry.DATE);
+        this.dataEntryModel.UPDATE = true;
+    };
+
+    ContoController.prototype.processBalance = function() {
+        this.balance.reset();
+
+        for (var idx in this.entries) {
+            if (this.entries[idx].VALUE > 0)
+                this.balance.active += this.entries[idx].VALUE;
+            else
+                this.balance.passive += this.entries[idx].VALUE;
+
+            this.balance.total += this.entries[idx].VALUE;
+        }
+
+        this.balance.isActive = this.balance.total >= 0;
     };
 
     // AngularJS, controller Class initialization
-    ContoController.$inject = [ '$scope', '$rootScope', '$http' ];
-    app.controller('conto-controller', ContoController);
+    ContoController.$inject = [ '$http' ];
+    app.controller('ContoController', ContoController);
 
 })();
