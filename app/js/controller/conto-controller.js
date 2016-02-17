@@ -115,7 +115,8 @@
             if (response.data) {
                 this.entries = JSON.parse(response.data);
                 this.processBalance();
-                document.getElementById('addEntryForm').reset();
+                this.dataEntryModel.reset();
+                $('#addEntryModal').modal('hide');
             } else if (response.data == 'EMPTY') {
                 alert('Problemi durante l\'inserimento.');
             }
@@ -147,7 +148,20 @@
         });
     };
 
+    ContoController.prototype.prepareDataEntryModelForInsert = function() {
+        debugger;
+        this.dataEntryModel.ID = '';
+        this.dataEntryModel.USER_ID = this.select.selectedUser.ID;
+        this.dataEntryModel.ACCOUNT_ID = this.select.selectedAccount.ID;
+        this.dataEntryModel.VALUE = '';
+        this.dataEntryModel.CODE = '';
+        this.dataEntryModel.CAUSAL = '';
+        this.dataEntryModel.DATE = '';
+        this.dataEntryModel.UPDATE = false;
+    };
+
     ContoController.prototype.prepareDataEntryModelForUpdate = function(entry) {
+        debugger;
         this.dataEntryModel.ID = entry.ID;
         this.dataEntryModel.USER_ID = entry.USER_ID;
         this.dataEntryModel.ACCOUNT_ID = entry.ACCOUNT_ID;

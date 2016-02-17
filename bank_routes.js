@@ -48,6 +48,7 @@ function BankDb() {
     };
 
     this.insertEntry = function(parameters, callback) {
+        debugger;
         this.db.run('INSERT INTO ACCOUNT_ENTRY (user_id, account_id, value, code, causal, date) VALUES($USER_ID, $ACCOUNT_ID, $VALUE, $CODE, $CAUSAL, $DATE)',
             { $USER_ID: parameters.USER_ID, $ACCOUNT_ID: parameters.ACCOUNT_ID, $CODE: parameters.CODE, $VALUE: parameters.VALUE, $CAUSAL: parameters.CAUSAL, $DATE: parameters.DATE },
             function(err) {
