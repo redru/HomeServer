@@ -44,7 +44,7 @@
         };
 
         this.select = {
-            selectedUser: {
+            /*selectedUser: {
                 ID: '',
                 USERNAME: ''
             },
@@ -52,7 +52,7 @@
             selectedAccount: {
                 ID: '',
                 DESCRIPTION: ''
-            }
+            }*/
         };
 
         this.getUsers();
@@ -149,7 +149,6 @@
     };
 
     ContoController.prototype.prepareDataEntryModelForInsert = function() {
-        debugger;
         this.dataEntryModel.ID = '';
         this.dataEntryModel.USER_ID = this.select.selectedUser.ID;
         this.dataEntryModel.ACCOUNT_ID = this.select.selectedAccount.ID;
@@ -161,7 +160,6 @@
     };
 
     ContoController.prototype.prepareDataEntryModelForUpdate = function(entry) {
-        debugger;
         this.dataEntryModel.ID = entry.ID;
         this.dataEntryModel.USER_ID = entry.USER_ID;
         this.dataEntryModel.ACCOUNT_ID = entry.ACCOUNT_ID;
